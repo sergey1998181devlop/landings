@@ -1,0 +1,62 @@
+@media screen and (max-width: 768px) {
+    .section-timer__block {
+        flex-flow: column;
+        h2 {
+            font-size: 1em;
+        }
+
+        span{
+            font-size: 21px;
+        }
+    }
+
+    .footer-payment-systems {
+        flex-flow: column;
+    }
+
+    .section-instant-loan__block-link {
+        font-size: 1em;
+        width: 100%;
+    }
+
+    section {
+        box-sizing: border-box;
+        padding: 0 15px;
+    }
+
+    .footer-top-block {
+        nav {
+            ul {
+                flex-flow: column;
+                align-items: center;
+                gap: 10px
+            }
+        }
+    }
+
+    .girl_wrapper {
+        padding-left: 0;
+        margin-top: 1em;
+    }
+
+    .section-instant-loan__block {
+        span {
+            font-size: 1em;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            line-height: 1;
+            font-weight: 500;
+        }
+    }
+
+    .section-instant-loan {
+       padding-top: 50px;
+        padding-bottom: 50px;
+    }
+
+    .text-5xl {
+        font-size: 2rem;
+    }
+}

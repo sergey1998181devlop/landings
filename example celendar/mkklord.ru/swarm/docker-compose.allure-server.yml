@@ -1,0 +1,33 @@
+version: '3.7'
+
+networks:
+  loadbalancer:
+    external: true
+
+services:
+
+  allure-server:
+    image: kochetkovma/allure-server:2.13.8
+    networks:
+     - loadbalancer
+    volumes:
+     - /home/dev-boostra/www-files/allure-server:/allure
+    ports:
+     - "28080:8080"
+
+    deploy:
+      placement:
+        constraints:
+          [ node.labels.type == dev ]
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.allure-server.rule=Host(`allure.dev.boostra.ru`)
+        - traefik.http.routers.allure-server.service=allure-server
+        - traefik.http.routers.allure-server.entrypoints=websecure
+        - traefik.http.services.allure-server.loadbalancer.server.port=8080
+        - traefik.http.routers.allure-server.tls=true
+        - traefik.http.routers.allure-server.tls.certresolver=le
+        - traefik.http.services.allure-server.loadbalancer.passhostheader=true
+        - traefik.http.routers.allure-server.middlewares=compresstraefik
+        - traefik.http.middlewares.compresstraefik.compress=true
+

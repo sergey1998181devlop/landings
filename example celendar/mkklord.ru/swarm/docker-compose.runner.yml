@@ -1,0 +1,77 @@
+version: "3.7"
+
+
+services:
+ # GitLab runners and register service for GitLab Ci/CD
+  dev-gitlab-runner-register:
+    image: gitlab/gitlab-runner:alpine-v15.0.0
+    hostname: dev-gitlab-runner-register
+    environment:
+      - CI_SERVER_URL=https://gcib0d3c8bstra.boostra.ru/
+      - REGISTRATION_TOKEN=GR1348941z5swppDmNx8pt8spgvQK
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - dev-gitlab-runner-config:/etc/gitlab-runner
+    command:
+      - register
+      - --non-interactive
+      - --executor=docker
+      - --name=boostra-dev-runner-docker
+      - --tag-list=dev,dev_host
+      - --docker-image=docker:20.10.17-dind-alpine3.16
+      - --docker-volumes=/var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      restart_policy:
+        condition: none
+      placement:
+        constraints:
+          [ node.labels.type == dev ]
+
+  dev-gitlab-runner:
+    image: gitlab/gitlab-runner:alpine-v15.0.0
+    hostname: dev-gitlab-runner
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - dev-gitlab-runner-config:/etc/gitlab-runner
+    deploy:
+      placement:
+        constraints:
+          [ node.labels.type == dev ]
+
+  dev-gitlab-runner-2-register:
+    image: gitlab/gitlab-runner:alpine-v15.0.0
+    hostname: dev-gitlab-runner-register
+    environment:
+      - CI_SERVER_URL=https://gcib0d3c8bstra.boostra.ru/
+      - REGISTRATION_TOKEN=GR1348941z5swppDmNx8pt8spgvQK
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - dev-gitlab-runner-2-config:/etc/gitlab-runner
+    command:
+      - register
+      - --non-interactive
+      - --executor=docker
+      - --name=boostra-dev-runner-docker
+      - --tag-list=dev,dev_host
+      - --docker-image=docker:20.10.17-dind-alpine3.16
+      - --docker-volumes=/var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      restart_policy:
+        condition: none
+      placement:
+        constraints:
+          [ node.labels.type == dev ]
+
+  dev-gitlab-runner-2:
+    image: gitlab/gitlab-runner:alpine-v15.0.0
+    hostname: dev-gitlab-runner
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - dev-gitlab-runner-2-config:/etc/gitlab-runner
+    deploy:
+      placement:
+        constraints:
+          [ node.labels.type == dev ]
+volumes:
+  dev-gitlab-runner-config: {}
+  dev-gitlab-runner-2-config: {}

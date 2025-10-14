@@ -1,0 +1,51 @@
+version: "3.7"
+
+networks:
+  loadbalancer:
+    external: true
+
+services:
+  app:
+    image: CONTAINER_IMAGE_APP
+    networks:
+     - loadbalancer
+    hostname: boostra-site
+    container_name: boostra-site
+    environment:
+      - SERVER_NAME=${SERVER_NAME}
+    volumes:
+      - /home/boostra-adm/www-files/boostra-site/${ENV_NAME}/config/:/var/www/html/config/
+      - /home/boostra-adm/www-files/boostra-site/design/boostra/img:/var/www/html/design/boostra/img
+      - /home/boostra-adm/www-files/boostra-site/design/boostra_mini/img:/var/www/html/design/boostra_mini/img
+      - /home/boostra-adm/www-files/boostra-site/design/boostra_mini_norm/img:/var/www/html/design/boostra_mini_norm/img
+      - /home/boostra-adm/www-files/boostra-site/design/boostra_mini_norm_dev/img:/var/www/html/design/boostra_mini_norm_dev/img
+      - /home/boostra-adm/www-files/boostra-site/design/default/images:/var/www/html/design/default/images
+      - /home/boostra-adm/www-files/boostra-site/design/orange_theme/img:/var/www/html/design/orange_theme/img
+      - /home/boostra-adm/www-files/boostra-site/files:/var/www/html/files
+      - /home/boostra-adm/www-files/boostra-site/${ENV_NAME}/logs:/var/www/html/logs
+      - /home/boostra-adm/www-files/boostra-site/robots.txt:/var/www/html/robots.txt
+    deploy:
+      replicas: 1
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.boostra-site-${ENV_NAME}.rule=Host(`${ENV_NAME}.boostra.ru`,`www.${ENV_NAME}.boostra.ru`)
+        - traefik.http.routers.boostra-site-${ENV_NAME}.service=boostra-site-${ENV_NAME}
+        - traefik.http.routers.boostra-site-${ENV_NAME}.entrypoints=websecure
+        - traefik.http.services.boostra-site-${ENV_NAME}.loadbalancer.server.port=8088
+        - traefik.http.routers.boostra-site-${ENV_NAME}.tls=true
+        - traefik.http.routers.boostra-site-${ENV_NAME}.tls.certresolver=le
+        - traefik.http.services.boostra-site-${ENV_NAME}.loadbalancer.passhostheader=true
+        - traefik.http.routers.boostra-site-${ENV_NAME}.middlewares=compresstraefik
+        - traefik.http.middlewares.compresstraefik.compress=true
+      placement:
+        constraints: [ node.labels.type == dev-site ]
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+      rollback_config:
+        parallelism: 1
+        order: start-first
+#      restart_policy:
+#        delay: 65s
+#        condition: any

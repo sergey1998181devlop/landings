@@ -1,0 +1,130 @@
+variables:
+  DOCKER_TLS_CERTDIR: ""
+  CONTAINER_BASE_IAMGE: cr.yandex/crph7f2g3hiesrf9bhvu/base-mkklord-site:latest
+  CONTAINER_IMAGE_APP: cr.yandex/crph7f2g3hiesrf9bhvu/mkklord-site:${CI_COMMIT_SHA}
+  CONTAINER_IMAGE_APP_LATEST: cr.yandex/crph7f2g3hiesrf9bhvu/mkklord-site:latest
+  DOCKER_VERSION: 20.10.17
+  APP_VERSION: ${CI_COMMIT_SHORT_SHA}
+
+stages:
+  - build-base
+  - build
+  - deploy
+
+.deployment: &deploy_script
+  script:
+    - echo ${CONTAINER_IMAGE_APP_STAGE}
+    - echo ${SWARM_STACK_NAME}
+    - sed -i -e 's/CONTAINER_IMAGE_APP/${CONTAINER_IMAGE_APP}/g' .docker/swarm/docker-stack.yml
+    - echo ${CI_KEY} | docker login --username json_key --password-stdin cr.yandex
+    - docker service ls | grep ${STACK_NAME}-${ENV_NAME} || true
+    - docker stack deploy ${STACK_NAME}-${ENV_NAME} --compose-file=.docker/swarm/docker-stack.yml --with-registry-auth --prune
+    - apk add --no-cache bash
+    - bash .docker/swarm/docker-stack-wait-deploy.sh ${STACK_NAME}-${ENV_NAME}
+    - docker service ls | grep ${STACK_NAME}-${ENV_NAME} || true
+    - docker system prune -a -f
+
+build-base-image:
+  stage: build-base
+  image: docker:${DOCKER_VERSION}-dind-alpine3.16
+  services:
+    - docker:${DOCKER_VERSION}-dind-alpine3.16
+  when: manual
+  except:
+    refs:
+      - master
+  variables:
+    GIT_CLEAN_FLAGS: none
+  tags:
+    - develop-crm
+  script:
+    - echo ${CI_KEY} | docker login --username json_key --password-stdin cr.yandex
+    - docker build -t ${CONTAINER_BASE_IAMGE} --no-cache -f .docker/images/base.Dockerfile .
+    - docker push ${CONTAINER_BASE_IAMGE}
+
+build-app-dev:
+  stage: build
+  image: docker:20.10.17-dind-alpine3.16
+  services:
+    - docker:20.10.17-dind-alpine3.16
+  when: manual
+  environment:
+    name: dev.mkklord.ru
+    url: https://dev.mkklord.ru
+  except:
+    refs:
+      - master
+  variables:
+    GIT_CLEAN_FLAGS: none
+  tags:
+    - develop-crm
+  script:
+    - echo ${CI_KEY} | docker login --username json_key --password-stdin cr.yandex
+    - cp "${CONFIG}" ./config/config.php
+    - docker build -t ${CONTAINER_IMAGE_APP} --no-cache -f .docker/images/Dockerfile .
+    - docker push ${CONTAINER_IMAGE_APP}
+
+deploy-dev:
+  stage: deploy
+  allow_failure: true
+  variables:
+    ENV_NAME: dev
+    SWARM_NODE: dev-site
+    SERVER_FILES_ROOT_DIR: "/home/boostra-adm/www-files/dev.mkklord.ru"
+    STACK_NAME: mkklord-site
+    DOMAIN: dev.mkklord.ru
+    APP_REPLICAS: 1
+  #    CROWDSEC_KEY: pBh83sp/YVB3iabfMb7lTdHFl8u2HPyygE/sJadQR/M
+  except:
+    refs:
+      - master
+  tags:
+    - develop-deploy
+  environment:
+    name: dev.mkklord.ru
+    url: https://dev.mkklord.ru
+  needs:
+    - build-app-dev
+  <<: *deploy_script
+
+build-app:
+  stage: build
+  image: docker:20.10.17-dind-alpine3.16
+  services:
+    - docker:20.10.17-dind-alpine3.16
+  tags:
+    - production-sites
+  environment:
+    name: mkklord.ru
+    url: https://mkklord.ru
+  only:
+    - master
+  script:
+    - echo ${CI_KEY} | docker login --username json_key --password-stdin cr.yandex
+    - cp "${CONFIG}" ./config/config.php
+    - docker build -t ${CONTAINER_IMAGE_APP} -t ${CONTAINER_IMAGE_APP_LATEST} --no-cache -f .docker/images/Dockerfile .
+    - docker push ${CONTAINER_IMAGE_APP}
+    - docker push ${CONTAINER_IMAGE_APP_LATEST}
+
+deploy-prod:
+  stage: deploy
+  when: manual
+  variables:
+    ENV_NAME: prod
+    SWARM_NODE: s-node-site
+    SERVER_FILES_ROOT_DIR: "/home/boostra-adm/s3-www-files-boostra/mkklord.ru"
+    STACK_NAME: mkklord-site
+    DOMAIN: mkklord.ru
+    APP_REPLICAS: 1
+  #    CROWDSEC_KEY: pBh83sp/YVB3iabfMb7lTdHFl8u2HPyygE/sJadQR/M
+  tags:
+    - production-deploy
+  environment:
+    name: mkklord.ru
+    url: https://mkklord.ru
+  only:
+    - master
+  needs:
+    - build-app
+  script:
+  <<: *deploy_script

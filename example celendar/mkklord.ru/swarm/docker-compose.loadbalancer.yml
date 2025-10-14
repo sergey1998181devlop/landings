@@ -1,0 +1,52 @@
+version: '3.7'
+
+networks:
+  loadbalancer:
+    external: true
+
+services:
+
+  traefik:
+    image: traefik:latest
+    networks:
+     - loadbalancer
+    volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
+     - /home/dev-boostra/www-files/traefik-certificates:/letsencrypt
+    ports:
+     - "48080:80"
+     - "48443:443"
+    command:
+      # Docker swarm configuration
+      - --providers.docker.endpoint=unix:///var/run/docker.sock
+      - --providers.docker.swarmMode=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=loadbalancer
+      # Configure entrypoint
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+#      # Configure configs
+#      - --providers.file.filename=/etc/traefik/dynamic_conf/traefik.yaml
+#      - --providers.file.watch=true
+      # SSL configuration for LetsEncrypt
+      - --certificatesresolvers.le.acme.tlschallenge=true
+      - --certificatesresolvers.le.acme.email=a.zayanchkovskiy@gmail.com
+      - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
+      # Global HTTP -> HTTPS
+      - --entrypoints.web.http.redirections.entryPoint.to=websecure
+      - --entrypoints.web.http.redirections.entryPoint.scheme=https
+      # Metrics
+      - --metrics.prometheus=true
+      - --metrics.prometheus.addrouterslabels=true
+      - --entryPoints.metrics.address=:8082
+      - --metrics.prometheus.entryPoint=metrics
+      # Configure dashboard
+      - --api.dashboard=true
+      - --api.insecure=true
+    deploy:
+      placement:
+        constraints:
+          [ node.labels.type == dev ]
+      labels:
+        - "traefik.enable=false"
+

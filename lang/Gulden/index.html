@@ -29,12 +29,8 @@
     <link href="assets/css/main.css" rel="stylesheet">
 
     <!-- Calculator CSS Files -->
-    <link href="assets/calculator/css/ion.rangeSlider.css" rel="stylesheet">
     <link href="assets/calculator/css/calculator.css" rel="stylesheet">
 
-    <script>
-        var BASE_PERCENTS = 1;
-    </script>
 </head>
 
 <body class="index-page">
@@ -79,27 +75,48 @@
                             Привяжите вашу карту и пользуйтесь всеми возможностями займов, не выходя из дома
                         </p>
 
-                        <div id="calculator">
-                            <input type="hidden" id="percent" value="0" />
-                            <input type="hidden" id="max_period" value="16" />
-                            <input type="hidden" id="have_close_credits" value="0" />
-                            <div class="calculator-item">
-                                <label for="money-range">Сумма займа</label>
-                                <input type="text" id="money-range" name="money-range" value="" />
+                    <div class="section-welcome__calculator calculator">
+                        <div class="calculator-item slider-container">
+                            <div class="calculator-item__header">
+                                <span class="calculator-item__title">Мне нужно:</span>
+                                <span class="calculator-item__amount">
+                        <span class="slider-current-value">30000</span>
+                        <span>₽</span>
+                      </span>
                             </div>
-                            <div class="calculator-item">
-                                <label for="time-range">Срок займа</label>
-                                <input type="text" id="time-range" name="time-range" value="" />
+                            <div class="calculator-item__values">
+                                <span class="calculator-item__min">1000</span>
+                                <span class="calculator-item__max">30000</span>
                             </div>
-                            <div class="result">
-                                <p>К возврату: <strong class="total"></strong></p>
-                                <p>Дата возврата: <strong class="date"></strong></p>
+                            <div class="calculator-slider slider" data-current-value="30000" data-min="1000" data-max="30000" data-step="1000" style="cursor: grab;">
+                                <div class="calculator-slider__line slider">
+                                    <div class="calculator-slider__progress slider-progress" style="width: 36.7089%;">
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="hero-buttons">
-                            <a href="#about" class="btn btn-primary me-0 me-sm-2 mx-1">Оставить заявку</a>
+                        <div class="calculator-item slider-container">
+                            <div class="calculator-item__header">
+                                <span class="calculator-item__title">Срок займа:</span>
+                                <span class="calculator-item__amount">
+                        <span class="slider-current-value">16</span>
+                        <span>дней</span>
+                      </span>
+                            </div>
+                            <div class="calculator-item__values">
+                                <span class="calculator-item__min">5</span>
+                                <span class="calculator-item__max">16</span>
+                            </div>
+                            <div class="calculator-slider slider" data-current-value="16" data-min="5" data-max="16" data-step="1" style="cursor: grab;">
+                                <div class="calculator-slider__line slider">
+                                    <div class="calculator-slider__progress slider-progress" style="width: 8%;">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        <button class="calculator__request-money-link" id="request-loan-btn">Оформить заявку</button>
+                        <div class="calculator__guarantee-text">Мы гарантируем автоматическое одобрение заявки и высокую степень безопасности данных</div>
+                    </div>
                     </div>
                 </div>
 
@@ -450,9 +467,7 @@
         class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
-<script src="assets/calculator/js/jquery-2.1.3.min.js"></script>
-<script src="assets/calculator/js/ion.rangeSlider.min.js"></script>
-<script src="assets/calculator/js/calculate.js"></script>
+<script src="assets/js/calculator.js"></script>
 <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="assets/vendor/php-email-form/validate.js"></script>
 <script src="assets/vendor/aos/aos.js"></script>

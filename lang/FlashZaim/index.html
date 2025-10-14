@@ -28,6 +28,14 @@
     <!-- Main CSS File -->
     <link href="assets/css/main.css" rel="stylesheet">
 
+    <!-- Calculator CSS Files -->
+    <link href="assets/calculator/css/ion.rangeSlider.css" rel="stylesheet">
+    <link href="assets/calculator/css/style.css" rel="stylesheet">
+    <link href="assets/calculator/css/pages.css" rel="stylesheet">
+
+    <script>
+        var BASE_PERCENTS = 1;
+    </script>
 </head>
 
 <body class="index-page">
@@ -71,6 +79,24 @@
                         <p class="mb-4 mb-md-5">
                             Привяжите вашу карту и пользуйтесь всеми возможностями займов, не выходя из дома
                         </p>
+
+                        <div id="calculator">
+                            <input type="hidden" id="percent" value="0" />
+                            <input type="hidden" id="max_period" value="16" />
+                            <input type="hidden" id="have_close_credits" value="0" />
+                            <div class="calculator-item">
+                                <label for="money-range">Сумма займа</label>
+                                <input type="text" id="money-range" name="money-range" value="" />
+                            </div>
+                            <div class="calculator-item">
+                                <label for="time-range">Срок займа</label>
+                                <input type="text" id="time-range" name="time-range" value="" />
+                            </div>
+                            <div class="result">
+                                <p>К возврату: <strong class="total"></strong></p>
+                                <p>Дата возврата: <strong class="date"></strong></p>
+                            </div>
+                        </div>
 
                         <div class="hero-buttons">
                             <a href="#about" class="btn btn-primary me-0 me-sm-2 mx-1">Оставить заявку</a>
@@ -412,6 +438,9 @@
         class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
+<script src="assets/calculator/js/jquery-2.1.3.min.js"></script>
+<script src="assets/calculator/js/ion.rangeSlider.min.js"></script>
+<script src="assets/calculator/js/calculate.js"></script>
 <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="assets/vendor/php-email-form/validate.js"></script>
 <script src="assets/vendor/aos/aos.js"></script>

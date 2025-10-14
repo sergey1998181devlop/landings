@@ -1,0 +1,34 @@
+#calculator {
+    --primary-color: #0d83fd;
+    --secondary-color: #0a6bcf;
+}
+
+#calculator .slider-box {
+    margin: 1.2rem 0 1.2rem;
+}
+
+#calculator .slider-box > div {
+    width: 80%;
+    margin: 0 auto;
+    clear: both;
+}
+
+#calculator .irs-min {
+    left: -3.7rem;
+}
+
+#calculator .irs-max {
+    right: -3.7rem;
+}
+
+#calculator .result {
+    font-size: 1.14rem;
+}
+
+#calculator .result span {
+    font-weight: bold;
+}
+
+#calculator button {
+    margin: 2.14rem 0 2rem;
+}

@@ -1,0 +1,100 @@
+.calculator {
+    --primary-color: #0d83fd;
+    --secondary-color: #0a6bcf;
+}
+*,
+:before,
+:after {
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: #e5e7eb;
+}
+:before,
+:after {
+    --tw-content: "";
+}
+.calculator {
+    --tw-text-opacity: 1;
+    color: var(--primary-color);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+.calculator__request-money-link {
+    display: inline-block;
+    border-radius: 0.75rem;
+    --tw-bg-opacity: 1;
+    background-color: var(--primary-color);
+    padding: 1rem 1.5rem;
+    text-transform: uppercase;
+    --tw-text-opacity: 1;
+    color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+.calculator__request-money-link:hover {
+    --tw-bg-opacity: 1;
+    background-color: var(--secondary-color);
+}
+.calculator__request-money-link {
+    margin-top: 3rem;
+    color: #fff;
+    transition: background-color 0.1s;
+}
+.calculator__guarantee-text {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    margin-top: 1rem;
+    font-weight: 100;
+}
+.calculator-item__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.calculator-item__title {
+    font-weight: 700;
+    font-size: 20px;
+}
+.calculator-item__amount {
+    font-weight: 700;
+    font-size: 30px;
+}
+.calculator-item__values {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 300;
+    font-size: 14px;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+.calculator-slider {
+    padding: 10px 0;
+}
+.calculator-slider__line {
+    height: 6px;
+    background: #fff;
+    border-radius: 10px;
+}
+.calculator-slider__progress {
+    --tw-bg-opacity: 1;
+    background-color: var(--primary-color);
+    width: 50%;
+    height: 100%;
+    position: relative;
+    border-radius: 10px;
+}
+.calculator-slider__progress:after {
+    --tw-bg-opacity: 1;
+    background-color: var(--primary-color);
+    content: "";
+    position: absolute;
+    right: -15px;
+    top: -12px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+.calculator-item__min,
+.calculator-item__max {
+    font-weight: 700;
+}
